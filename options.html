@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blackboard Instructor Enhancement Options</title>
+    <script src="browser-polyfill.js"></script>
+    <style>
+        .grid_container{
+            display:grid;
+            grid-template-columns: auto auto auto;
+            min-width:350px;
+        }
+        .grid_checkbox{
+            grid-column:1;
+        }
+        .grid_description{
+            grid-column:2/span 2;
+        }
+        .grid_full{
+            grid-column:1/ span 3;
+        }
+    </style>
+</head>
+<body>
+    <h2>Blackboard Instructor Enchancements</h2>
+    <div class="grid_container">
+        <div class="grid_checkbox"><input type="checkbox" id="gcMaxTweak"></div>
+        <div class="grid_description"><label for="gcMaxTweak">Grade Center remove max students and save number of students to display.</label></div>
+
+        <div class="grid_checkbox"><input type="checkbox" id="gcFilterTweak"></div>
+        <div class="grid_description"><label for="gcFilterTweak">Grade Center auto show filter.</label></div>
+
+        <div class="grid_checkbox"><input type="checkbox" id="gcScrollBarTweak"></div>
+        <div class="grid_description"><label for="gcScrollBarTweak">Grade Center create stationary bottom scrollbar.</label></div>
+        
+        <div class="grid_checkbox"><input type="checkbox" id="gradeDetailsShowJumpTo"></div>
+        <div class="grid_description"><label for="gradeDetailsShowJumpTo">Grade Details auto show Jump To.</label></div>
+
+        <div class="grid_checkbox"><input type="checkbox" id="dbAddDownloadAll"></div>
+        <div class="grid_description"><label for="dbAddDownloadAll">Add "Download All" posts to discussion board message collection (Can be submitted to SafeAssign Direct submit)</label></div>
+        
+        <div class="grid_checkbox"><input type="checkbox" id="dlAssignmentsShowAll"></div>
+        <div class="grid_description"><label for="dlAssignmentsShowAll">Automatically show all on Assignment File Download.</label></div>
+        
+        <div class="grid_checkbox"><input type="checkbox" id="userShowAll"></div>
+        <div class="grid_description"><label for="userShowAll">Automatically show all on Users page.</label></div>
+        
+        <div class="grid_checkbox"><input type="checkbox" id="needsGradingShowAll"></div>
+        <div class="grid_description"><label for="needsGradingShowAll">Automatically show all on Needs Grading.</label></div>
+
+        <div class="grid_checkbox"><input type="checkbox" id="poolQuestionsShowAll"></div>
+        <div class="grid_description"><label for="poolQuestionsShowAll">Automatically show all on Editing a Test/Test Pool.</label></div>
+
+        <div class="grid_checkbox"><input type="checkbox" id="gradeQuestionsShowAll"></div>
+        <div class="grid_description"><label for="gradeQuestionsShowAll">Automatically show all on Grading Questions.</label></div>
+        
+        <div class="grid_checkbox"><input type="checkbox" id="fixPaste"></div>
+        <div class="grid_description"><label for="fixPaste">Fix pasting images into Text Areas</label></div>
+
+        <div class="grid_checkbox"><input type="checkbox" id="hideRemoveUsers"></div>
+        <div class="grid_description"><label for="hideRemoveUsers">Hide Remove Users in User Management</label></div>
+
+        <div class="grid_checkbox"><input type="checkbox" id="addDisableUsers"></div>
+        <div class="grid_description"><label for="addDisableUsers">Add Enable/Disable Users to User Management to change Availability</label></div>
+
+        <div class="grid_checkbox"><input type="checkbox" id="gcEnableDisableUsers"></div>
+        <div class="grid_description"><label for="gcEnableDisableUsers">Add Enable/Disable Users to Grade Center to change Availability</label></div>
+
+        <div class="grid_checkbox"><input type="checkbox" id="gcDeleteUsers"></div>
+        <div class="grid_description"><label for="gcDeleteUsers">Add Remove Users to Grade Center</label></div>
+
+        <div class="grid_checkbox"><input type="checkbox" id="gradingAddStudentIDs"></div>
+        <div class="grid_description"><label for="gradingAddStudentIDs">Show Student IDs while grading</label></div>
+
+        <div class="grid_checkbox"><input type="checkbox" id="gcHoverAddedDate"></div>
+        <div class="grid_description"><label for="gcHoverAddedDate">Enable extra Grade Center tooltips</label></div>
+
+        <div class="grid_checkbox"><input type="checkbox" id="gcEnableScrollOnTable"></div>
+        <div class="grid_description"><label for="gcEnableScrollOnTable">Enable Horizontal and Vertical Scroll over Grade Center Table</label></div>
+
+        <div class="grid_full"><label for="gcHScrollSensitivity">Horizontal Scroll Sensitivity (Requires Page Refresh)</label></div>
+        <div class="grid_full"><input type="range" max="200" min="10" step="10" id="gcHScrollSensitivity"><input type="number" max="200" min="10" step="10" id="gcHScrollSensitivityMan" /></div>
+
+        <div class="grid_full"><label for="gcVScrollSensitivity">Vertical Scroll Sensitivity (Requires Page Refresh)</label></div>
+        <div class="grid_full"><input type="range" max="200" min="10" step="10" id="gcVScrollSensitivity"><input type="number" max="200" min="10" step="10" id="gcVScrollSensitivityMan" /></div>
+
+        <div class="grid_checkbox"><input type="checkbox" id="gcCopyUsernames"></div>
+        <div class="grid_description"><label for="gcCopyUsernames">Enable adding a Copy Usernames Button to Grade Center</label></div>
+
+        <div class="grid_full"><label for="gcCopyUsernamesDel">Copy Username Delimiter (Refresh required)</label></div>
+        <div class="grid_full"><input type="text" id="gcCopyUsernamesDel" /></div>
+
+        <div class="grid_full" ><div id="status"></div></div>
+        <div class="grid_full"><button id="save">Save</button></div>
+    </div>  
+    <script src="./options.js"></script>
+</body>
+</html>

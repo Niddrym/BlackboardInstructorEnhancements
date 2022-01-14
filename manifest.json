@@ -1,0 +1,67 @@
+{
+    "name": "Blackboard Instructor Enhancements",
+    "version": "0.3.0",
+    "manifest_version": 2,
+    "description": "Blackboard Enhancements for Instructors to improve the UI",
+    "homepage_url": "https://iacobacci.com",
+    "author": "Franco Iacobacci",
+    "content_scripts": [
+        {
+          "run_at": "document_end",
+          "matches": ["*://*/webapps/gradebook/do/instructor/enterGradeCenter*","*://*/webapps/gradebook/do/instructor/viewSpreadsheet2*","*://*/webapps/gradebook/do/instructor/deleteItem*"],
+          "all_frames": true,
+          "js": ["browser-polyfill.js","GradeCenterTweak.js"]
+        },
+        {
+          "run_at": "document_end",
+          "matches": ["*://*/webapps/discussionboard/do/message*action=collect_forward*"],
+          "all_frames": true,
+          "js": ["browser-polyfill.js","DiscussionBoardTweak.js"]
+        },
+        {
+          "run_at": "document_end",
+          "matches": ["*://*/webapps/blackboard/execute/userManager*"],
+          "all_frames": true,
+          "js": ["browser-polyfill.js","disableSelectedUsers.js"]
+        },
+        {
+          "run_at": "document_end",
+          "matches": ["*://*/webapps/assessment/do/gradeTest*","*://*/webapps/assignment/gradeAssignment*"],
+          "all_frames": true,
+          "js": ["browser-polyfill.js","GradeAttempt.js"]
+        },
+        {
+          "run_at": "document_end",
+          "matches": ["*://*/webapps/gradebook/do/instructor/viewGradeDetails*"],
+          "all_frames": true,
+          "js": ["browser-polyfill.js","GradeDetails.js"]
+        }
+    ],
+    "permissions": [
+      "activeTab",
+      "*://*/webapps/gradebook/do/instructor/downloadAssignment*",
+      "*://*/webapps/blackboard/execute/userManager*",
+      "*://*/webapps/gradebook/do/instructor/viewNeedsGrading*",
+      "*://*/webapps/assessment/do/authoring/modifyAssessment*method=modifyAssessment*",
+      "*://*/webapps/vtbe-tinymce/javascript/vtbeTinyMce.js*",
+      "*://*/webapps/assessment/do/grade/viewQuestions*",
+      "webRequest",
+      "webRequestBlocking",
+      "storage"
+    ],
+    "background": {
+      "scripts": ["browser-polyfill.js","background.js"],
+      "persistent": true
+    },
+    "options_ui": {
+      "page": "options.html",
+      "open_in_tab": false
+    },
+    "browser_action": {
+      "browser_style": true,
+      "default_icon": {},
+      "default_title": "Blackboard Instructor Enhancements",
+      "default_popup": "options.html"
+    },
+    "web_accessible_resources": ["settings.json"]
+  }

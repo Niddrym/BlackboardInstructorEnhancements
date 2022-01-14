@@ -1,0 +1,18 @@
+{
+    "gcMaxTweak":true,
+    "gcFilterTweak":true,
+    "gcScrollBarTweak":true,
+    "dbAddDownloadAll":true,
+    "dlAssignmentsShowAll":true,
+    "userShowAll":true,
+    "needsGradingShowAll":true,
+    "fixPaste":true,
+    "addDisableUsers":true,
+    "hideRemoveUsers":true,
+    "gcEnableDisableUsers":true,
+    "gcEnableScrollOnTable":true,
+    "gradingAddStudentIDs":true,
+    "gradeDetailsShowJumpTo":true,
+    "gcHScrollSensitivity":100,
+    "gcVScrollSensitivity":100
+}
