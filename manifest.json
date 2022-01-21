@@ -35,6 +35,12 @@
           "matches": ["*://*/webapps/gradebook/do/instructor/viewGradeDetails*"],
           "all_frames": true,
           "js": ["browser-polyfill.js","GradeDetails.js"]
+        },
+        {
+          "run_at": "document_end",
+          "matches": ["*://*/webapps/blackboard/content/copyItem.jsp*"],
+          "all_frames": true,
+          "js": ["browser-polyfill.js","CopyItem.js"]
         }
     ],
     "permissions": [
@@ -63,5 +69,5 @@
       "default_title": "Blackboard Instructor Enhancements",
       "default_popup": "options.html"
     },
-    "web_accessible_resources": ["settings.json"]
+    "web_accessible_resources": ["settings.json","browser-polyfill.js.map"]
   }

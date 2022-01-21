@@ -18,6 +18,7 @@ let defaults={
     gcHoverAddedDate:true,
     gcCopyUsernames:true,
     gcDeleteUsers:true,
+    copyItemSearchCourses:true,
     gcCopyUsernamesDel:'; ',
     gcHScrollSensitivity:100,
     gcVScrollSensitivity:100
