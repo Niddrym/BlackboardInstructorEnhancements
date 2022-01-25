@@ -3,7 +3,7 @@
     "version": "0.3.1",
     "manifest_version": 2,
     "description": "Blackboard Enhancements for Instructors to improve the UI",
-    "homepage_url": "https://iacobacci.com",
+    "homepage_url": "https://github.com/Niddrym/BlackboardInstructorEnhancements",
     "author": "Franco Iacobacci",
     "content_scripts": [
         {
