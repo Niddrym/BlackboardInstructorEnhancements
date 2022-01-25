@@ -1,10 +1,13 @@
 {
     "name": "Blackboard Instructor Enhancements",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "manifest_version": 2,
     "description": "Blackboard Enhancements for Instructors to improve the UI",
     "homepage_url": "https://github.com/Niddrym/BlackboardInstructorEnhancements",
     "author": "Franco Iacobacci",
+    "icons":{
+        "128":"icons/128.png"
+    },
     "content_scripts": [
         {
           "run_at": "document_end",
