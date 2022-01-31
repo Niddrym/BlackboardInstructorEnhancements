@@ -19,6 +19,7 @@ let defaults={
     gcCopyUsernames:true,
     gcDeleteUsers:true,
     copyItemSearchCourses:true,
+    addCourseSwitch:true,
     gcCopyUsernamesDel:'; ',
     gcHScrollSensitivity:100,
     gcVScrollSensitivity:100
@@ -45,7 +46,7 @@ let callback = function(details) {
     }
 };
 let callbackPasteJS = function(details){
-    if(details.url.indexOf("&fixing=true")==-1){
+    if(details.url.indexOf("fixing=true")==-1){
         let body = makeSyncReq(details.url+(details.url.indexOf("?")==-1?"?":"&")+"fixing=true");
         body+=`
         tinyMceWrapper.Editor.prototype.initializeConfigOld=tinyMceWrapper.Editor.prototype.initializeConfig;
@@ -61,7 +62,7 @@ let callbackPasteJS = function(details){
 }
 
 let callbackGCMaxJS = function(details){
-    if(details.url.indexOf("&fixing=true")==-1){
+    if(details.url.indexOf("fixing=true")==-1){
         let body = makeSyncReq(details.url+(details.url.indexOf("?")==-1?"?":"&")+"fixing=true");
         body+=`
         Gradebook.GridModel.prototype.oldInitGridModel=Gradebook.GridModel.prototype.initialize;
@@ -79,24 +80,76 @@ let callbackGCMaxJS = function(details){
     }
 }
 
-let callbackaGCMaxJS = function(details){
-    if(details.url.indexOf("&fixing=true")==-1){
-        let body = makeaSyncReq(details.url+(details.url.indexOf("?")==-1?"?":"&")+"fixing=true").then((text)=>{
-            text+=`
-            Gradebook.GridModel.prototype.oldInitGridModel=Gradebook.GridModel.prototype.initialize;
-            Gradebook.GridModel.prototype.initialize=function(gradebookService){
-                this.oldInitGridModel(gradebookService);
-                this.minimumRows=localStorage.getItem('gradebook.rows')||this.minimumRows;
-            };
-            Gradebook.GridModel.prototype.setMinimumRows=function(minRows){
-                minRows=minRows<5?5:minRows;
-                this.minimumRows=minRows;
-                localStorage.setItem('gradebook.rows', minRows);
-            };
-            `;
-            return {redirectUrl:"data:application/javascript;base64,"+btoa(text)};
+let callbackAddSwitchToCourseMenu = function(details){
+    if(details.url.indexOf("fixing=true")==-1){
+        let body = makeSyncReq(details.url+(details.url.indexOf("?")==-1?"?":"&")+"fixing=true");
+        body+=`
+        let terms = Promise.resolve("start").then(async (data)=>{
+            let sortedTerm=[];
+            let nextURL={nextPage:\`/learn/api/public/v1/terms\`};
+            do{
+                await fetch(nextURL.nextPage).then(resp => resp.json()).then((data)=>{
+                    nextURL=data.paging;
+                    sortedTerm=sortedTerm.concat(data.results);
+                }); 
+            }while(typeof nextURL != "undefined");
+            sortedTerm.sort((a,b)=>{
+                if(b.availability.duration.type=="Continuous"){
+                    return -1;
+                }
+                if(a.availability.duration.type=="Continuous"){
+                    return 1;
+                }
+                return b.availability.duration.start.localeCompare(a.availability.duration.start);
+            });
+            return sortedTerm;
         });
-        return body;
+        let courses = fetch('/webapps/blackboard/execute/editUser?context=self_modify').then(response => response.text()).then(async data => {
+            let el = document.createElement('html');
+            el.innerHTML=data;
+            let userid=el.querySelector("#user_id").value;
+
+            let sortedCourses = {};
+            let nextURL={nextPage:\`/learn/api/public/v1/users/\${userid}/courses?expand=course\`};
+            do{
+                await fetch(nextURL.nextPage).then(resp => resp.json()).then((data)=>{
+                    nextURL=data.paging;
+                    data.results.forEach((v,i)=>{
+                        if(typeof v.course.termId == "undefined"){
+                            v.course.termId="unknown";
+                        }
+                        if(typeof sortedCourses[v.course.termId] == "undefined"){
+                            sortedCourses[v.course.termId]=[];
+                        }
+                        sortedCourses[v.course.termId].push(v);
+                    });
+                }); 
+            }while(typeof nextURL != "undefined");
+            return sortedCourses;  
+        });
+        terms.then(ts =>{
+            return courses.then((cs)=>{
+                let html="<select id='courseSwitcher'>";
+                for(let term of ts){
+                    if(typeof cs[term.id]!= "undefined"){
+                        html+=\`<optgroup label="\${term.name}">\`;
+                        for(let v of cs[term.id]){
+                            if(v.courseRoleId=="Instructor" || v.courseRoleId=="TeachingAssistant"){
+                                html+=\`<option value="\${v.course.id}" \${v.course.id==window.course_id?"selected":""}>\${v.course.name} \${v.course.courseId}</option>\`;
+                            }
+                        }
+                        html+="</optgroup>";
+                    }
+                }
+                html+="</select>";
+                jQuery("#breadcrumbs .path .clearfix").append(html);
+                jQuery("#courseSwitcher").on("change",(e)=>{
+                    window.location.href=window.location.href.replaceAll(window.course_id,e.target.value);
+                });
+            })
+        });
+        `;
+        return {redirectUrl:"data:application/javascript;base64,"+btoa(body)};
     }
 }
 
@@ -104,6 +157,7 @@ let callbackaGCMaxJS = function(details){
 let filter = { urls:[] };
 let filterPasteJS = { urls:[] };
 let filterGCMaxJS = { urls:[] };
+let filterCourseMenu = { urls:[] };
 let opt_extraInfoSpec = ["blocking"];
 
 function intercepts(){
@@ -136,6 +190,10 @@ function intercepts(){
             filterGCMaxJS.urls.push("*://*/webapps/gradebook/js/view_spreadsheet2.js*");
             browser.webRequest.onBeforeRequest.addListener(callbackGCMaxJS, filterGCMaxJS, opt_extraInfoSpec);
         }
+        if(options.addCourseSwitch){
+            filterCourseMenu.urls.push("*://*/*/javascript/ngui/coursemenu.js*");
+            browser.webRequest.onBeforeRequest.addListener(callbackAddSwitchToCourseMenu, filterCourseMenu, opt_extraInfoSpec);
+        }
     });
 }
 browser.runtime.onMessage.addListener(function(message){
@@ -148,6 +206,9 @@ browser.runtime.onMessage.addListener(function(message){
         }
         if(browser.webRequest.onBeforeRequest.hasListener(callbackGCMaxJS)){
             browser.webRequest.onBeforeRequest.removeListener(callbackGCMaxJS);
+        }
+        if(browser.webRequest.onBeforeRequest.hasListener(callbackAddSwitchToCourseMenu)){
+            browser.webRequest.onBeforeRequest.removeListener(callbackAddSwitchToCourseMenu);
         }
         intercepts();
     }

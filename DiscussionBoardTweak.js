@@ -19,6 +19,7 @@ let defaults={
     gcCopyUsernames:true,
     gcDeleteUsers:true,
     copyItemSearchCourses:true,
+    addCourseSwitch:true,
     gcCopyUsernamesDel:'; ',
     gcHScrollSensitivity:100,
     gcVScrollSensitivity:100
