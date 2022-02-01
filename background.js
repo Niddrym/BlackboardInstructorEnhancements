@@ -145,10 +145,23 @@ let callbackAddSwitchToCourseMenu = function(details){
                 jQuery("#breadcrumbs .path .clearfix").append(html);
                 jQuery("#courseSwitcher").on("change",(e)=>{
                     if(window.location.href.includes("content_id")){
-                        fetch(\`/learn/api/public/v1/courses/\${e.target.value}/contents?title=\${jQuery("#crumb_2").text().trim()}\`).then(res => res.json()).then((data)=>{
+                        fetch(\`/learn/api/public/v1/courses/\${e.target.value}/contents?title=\${jQuery("#crumb_2").text().trim()}\`).then(res => res.json()).then(async (data)=>{
                             if(data.results.length>0){
+                                let crumbNum=3;
+                                let currentContentId=data.results[0].id;
+                                while(jQuery("#crumb_"+crumbNum).text().trim()!=''&&i>0){
+                                    await fetch(\`/learn/api/public/v1/courses/\${e.target.value}/contents/\${currentContentId}/children?title=\${jQuery("#crumb_"+crumbNum).text().trim()}\`).then(res => res.json()).then((data)=>{
+                                        if(data.results.length>0){
+                                            i++;
+                                            currentContentId=data.results[0].id;
+                                        }
+                                        else{
+                                            i=0;
+                                        }
+                                    });
+                                }
                                 const regex = /content_id=[0-9_]*/ig;
-                                window.location.href=window.location.href.replaceAll(window.course_id,e.target.value).replaceAll(regex,\`content_id=\${data.results[0].id}\`);
+                                window.location.href=window.location.href.replaceAll(window.course_id,e.target.value).replaceAll(regex,\`content_id=\${currentContentId}\`);
                             }
                             else{
                                 window.location.href=\`/webapps/blackboard/execute/courseMain?course_id=\${e.target.value}\`;
