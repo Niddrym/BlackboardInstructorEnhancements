@@ -144,7 +144,20 @@ let callbackAddSwitchToCourseMenu = function(details){
                 html+="</select>";
                 jQuery("#breadcrumbs .path .clearfix").append(html);
                 jQuery("#courseSwitcher").on("change",(e)=>{
-                    window.location.href=window.location.href.replaceAll(window.course_id,e.target.value);
+                    if(window.location.href.includes("content_id")){
+                        fetch(\`/learn/api/public/v1/courses/\${e.target.value}/contents?title=\${jQuery("#crumb_2").text().trim()}\`).then(res => res.json()).then((data)=>{
+                            if(data.results.length>0){
+                                const regex = /content_id=[0-9_]*/ig;
+                                window.location.href=window.location.href.replaceAll(window.course_id,e.target.value).replaceAll(regex,\`content_id=\${data.results[0].id}\`);
+                            }
+                            else{
+                                window.location.href=\`/webapps/blackboard/execute/courseMain?course_id=\${e.target.value}\`;
+                            }
+                        });
+                    }
+                    else{
+                        window.location.href=window.location.href.replaceAll(window.course_id,e.target.value);
+                    }
                 });
             })
         });
