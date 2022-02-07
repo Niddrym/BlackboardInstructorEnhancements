@@ -141,6 +141,15 @@ let callbackAddSwitchToCourseMenu = function(details){
                         html+="</optgroup>";
                     }
                 }
+                if(typeof cs["unknown"]!= "undefined"){
+                    html+=\`<optgroup label="Unknown">\`;
+                    for(let v of cs["unknown"]){
+                        if(v.courseRoleId=="Instructor" || v.courseRoleId=="TeachingAssistant"){
+                            html+=\`<option value="\${v.course.id}" \${v.course.id==window.course_id?"selected":""}>\${v.course.name} \${v.course.courseId}</option>\`;
+                        }
+                    }
+                    html+="</optgroup>";
+                }
                 html+="</select>";
                 jQuery("#breadcrumbs .path .clearfix").append(html);
                 jQuery("#courseSwitcher").on("change",(e)=>{
