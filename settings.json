@@ -14,5 +14,6 @@
     "gradingAddStudentIDs":true,
     "gradeDetailsShowJumpTo":true,
     "gcHScrollSensitivity":100,
-    "gcVScrollSensitivity":100
+    "gcVScrollSensitivity":100,
+    "testOptionsFollow": true
 }

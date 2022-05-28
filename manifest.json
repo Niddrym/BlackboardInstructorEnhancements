@@ -44,6 +44,12 @@
           "matches": ["*://*/webapps/blackboard/content/copyItem.jsp*"],
           "all_frames": true,
           "js": ["browser-polyfill.js","CopyItem.js"]
+        },
+        {
+          "run_at": "document_end",
+          "matches": ["*://*/webapps/assessment/do/content/addAssessment*", "*://*/webapps/assessment/do/content/assessment?action=MODIFY**"],
+          "all_frames": true,
+          "js": ["browser-polyfill.js","TestOptions.js"]
         }
     ],
     "permissions": [

@@ -22,7 +22,8 @@ let defaults={
     addCourseSwitch:true,
     gcCopyUsernamesDel:'; ',
     gcHScrollSensitivity:100,
-    gcVScrollSensitivity:100
+    gcVScrollSensitivity:100,
+    testOptionsFollow: true
 };
 
 let makeSyncReq = function(url){
