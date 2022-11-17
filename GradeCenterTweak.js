@@ -81,17 +81,19 @@ browser.storage.sync.get(defaults).then(function(options){
     if(options.gcEnableDisableUsers||options.gcDeleteUsers){
         script.innerHTML+=`
         
-        let studentIds=fetch(\`/webapps/blackboard/execute/userManager?course_id=\${course_id}&showAll=true\`).then(response => response.text()).then(data => { 
-            let el = document.createElement("html");  
-            el.innerHTML=data; 
-            tempStudents={};
-            el.querySelectorAll("#listContainer_datatable tbody tr").forEach(row => { 
-                let username=row.querySelector("th .profileCardAvatarThumb").textContent.trim();
-                if (typeof username !== "undefined"){
-                    tempStudents[username]=row.querySelector('input').value;
-                }
-            });
-            return tempStudents;
+
+        let studentIds=new Promise(async (resolve,reject)=>{
+            let tempStudents={};
+            let nextURL={nextPage:\`/learn/api/public/v1/courses/\${course_id}/users\`};
+            do{
+                await fetch(nextURL.nextPage).then(resp => resp.json()).then((data)=>{
+                    nextURL=data.paging;
+                    data.results.forEach(row => { 
+                        tempStudents[row.id]=row;
+                    });
+                }); 
+            }while(typeof nextURL != "undefined");
+            resolve(tempStudents);
         });`
     }
 
@@ -101,10 +103,10 @@ browser.storage.sync.get(defaults).then(function(options){
 
         function toggleSelectedUsers(toggle){
             let promises=[];
-            gbModel.getStudentsByUserIds(gbModel.getCheckedStudentIds()).forEach((v) => {
+            gbModel.getCheckedStudentIds().forEach((v) => {
                 
                 promises.push(studentIds.then((studentBBIds) => { 
-                    return fetch(\`/webapps/blackboard/execute/courseMembership?context=modify&user_id=\${studentBBIds[v.user]}&course_id=\${course_id}\`)
+                    return fetch(\`/webapps/blackboard/execute/courseMembership?context=modify&user_id=\${studentBBIds["_"+v+"_1"].userId}&course_id=\${course_id}\`)
                     .then(response => response.text())
                     .then(data => {
                         let el = document.createElement('html');
@@ -165,8 +167,8 @@ browser.storage.sync.get(defaults).then(function(options){
                     formData.append("selectAllFromList",el.querySelector("[name='selectAllFromList']").value);
                     formData.append("numResults",el.querySelector("[name='numResults']").value);
                     formData.append("blackboard.platform.security.NonceUtil.nonce",el.querySelector("[name='blackboard.platform.security.NonceUtil.nonce']").value);
-                    gbModel.getStudentsByUserIds(gbModel.getCheckedStudentIds()).forEach((v) => {
-                        formData.append("ckbox",studentBBIds[v.user]);
+                    gbModel.getCheckedStudentIds().forEach((v) => {
+                        formData.append("ckbox",studentBBIds["_"+v+"_1"].userId);
                     });
                     return fetch(\`/webapps/blackboard/execute/userManager?course_id=\${course_id}\`,{
                         method:"POST",
