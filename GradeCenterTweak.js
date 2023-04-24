@@ -18,6 +18,7 @@ let defaults={
     gcHoverAddedDate:true,
     gcCopyUsernames:true,
     gcDeleteUsers:true,
+    gcHideBulkUsers:true,
     copyItemSearchCourses:true,
     addCourseSwitch:true,
     gcCopyUsernamesDel:'; ',
@@ -95,6 +96,29 @@ browser.storage.sync.get(defaults).then(function(options){
             }while(typeof nextURL != "undefined");
             resolve(tempStudents);
         });`
+    }
+
+    
+    if(options.gcHideBulkUsers){
+        script.innerHTML+=`
+        
+
+        function hideSelectedUsers(toggle){
+            gbModel.getCheckedStudentIds().forEach((v) => {
+                
+                gbModel.updateUserVisibility(v,toggle)
+            });
+        }
+        jQuery(document).ready(function(){
+            document.querySelectorAll("#containerdiv ul.nav").forEach((v) => {
+                let listItems = v.querySelectorAll(".primary");
+                jQuery(listItems[listItems.length-1]).after(\`
+                    <li class="primary" style="" role="button"><a href="javascript:hideSelectedUsers('false')" >Hide Selected Users</a></li>\`
+                ); 
+            });
+        });   
+
+        `;
     }
 
     if(options.gcEnableDisableUsers){

@@ -18,13 +18,13 @@ let defaults={
     gcHoverAddedDate:true,
     gcCopyUsernames:true,
     gcDeleteUsers:true,
+    gcHideBulkUsers:true,
     copyItemSearchCourses:true,
     addCourseSwitch:true,
     gcCopyUsernamesDel:'; ',
     gcHScrollSensitivity:100,
     gcVScrollSensitivity:100
 };
-
 
 //document.querySelectorAll("#nonAccessibleTableDiv tr :checked")[0].parentElement.parentElement.querySelectorAll("a[title*='@'")[0].textContent
 
